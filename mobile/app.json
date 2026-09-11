@@ -15,7 +15,7 @@
       "expo-local-authentication"
     ],
     "extra": {
-      "apiBaseUrl": "https://motorcycles-vegetarian-happened-moment.trycloudflare.com",
+      "apiBaseUrl": "https://emaus-api-gaexejhafdbbbrha.westus3-01.azurewebsites.net",
       "router": {},
       "eas": {
         "projectId": "370f42ac-1673-457f-88a5-fcd884248ee1"
