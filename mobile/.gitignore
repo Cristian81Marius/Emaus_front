@@ -31,10 +31,21 @@ yarn-error.*
 *.pem
 
 # local env files
+.env
 .env*.local
 
 # typescript
 *.tsbuildinfo
+
+# Claude Code local-only state
+.claude/settings.local.json
+.claude/scheduled_tasks.lock
+
+# Windows
+Thumbs.db
+
+# coverage
+coverage/
 
 # generated native folders
 /ios
