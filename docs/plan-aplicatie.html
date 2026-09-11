@@ -1,0 +1,696 @@
+<title>Planul Casei Emaus</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Karla:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+  :root{
+    --bg:#EEF1EE;
+    --surface:#FFFFFF;
+    --surface-2:#E4EAE5;
+    --ink:#1E2A26;
+    --ink-soft:#52635D;
+    --ink-faint:#7C8B85;
+    --line:#D2DBD5;
+    --accent:#A85A2E;
+    --accent-ink:#8A491F;
+    --accent-tint:#F1E2D3;
+    --ok:#3F7D5C;      --ok-tint:#DEEEE4;
+    --info:#3E5C78;    --info-tint:#E1E8EE;
+    --warn:#A5790F;    --warn-tint:#F2E7CC;
+    --danger:#A5372C;  --danger-tint:#F4DEDA;
+    --shadow: 0 1px 2px rgba(30,42,38,.06), 0 6px 20px -8px rgba(30,42,38,.15);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#141F1B;
+      --surface:#1B2620;
+      --surface-2:#223027;
+      --ink:#ECEFEA;
+      --ink-soft:#A9B7B0;
+      --ink-faint:#77887F;
+      --line:#324137;
+      --accent:#E0965E;
+      --accent-ink:#F0AE7B;
+      --accent-tint:#3A2A1D;
+      --ok:#78C79A;      --ok-tint:#1E3A2A;
+      --info:#8FB0CE;    --info-tint:#212F3D;
+      --warn:#E2C066;    --warn-tint:#3A2F16;
+      --danger:#E48A7D;  --danger-tint:#3D231F;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px -8px rgba(0,0,0,.4);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#141F1B;
+    --surface:#1B2620;
+    --surface-2:#223027;
+    --ink:#ECEFEA;
+    --ink-soft:#A9B7B0;
+    --ink-faint:#77887F;
+    --line:#324137;
+    --accent:#E0965E;
+    --accent-ink:#F0AE7B;
+    --accent-tint:#3A2A1D;
+    --ok:#78C79A;      --ok-tint:#1E3A2A;
+    --info:#8FB0CE;    --info-tint:#212F3D;
+    --warn:#E2C066;    --warn-tint:#3A2F16;
+    --danger:#E48A7D;  --danger-tint:#3D231F;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px -8px rgba(0,0,0,.4);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Karla',system-ui,-apple-system,'Segoe UI',sans-serif;
+    line-height:1.6;
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{
+    font-family:'Fraunces',Georgia,'Times New Roman',serif;
+    font-weight:600;
+    text-wrap:balance;
+    color:var(--ink);
+    letter-spacing:-0.01em;
+  }
+  p{margin:0 0 1em;}
+  a{color:var(--accent-ink);}
+  ::selection{background:var(--accent-tint);}
+
+  .layout{
+    display:flex;
+    align-items:flex-start;
+    max-width:1180px;
+    margin:0 auto;
+    padding:0 24px 96px;
+    gap:56px;
+  }
+  nav.toc{
+    position:sticky;
+    top:28px;
+    flex:0 0 216px;
+    padding-top:40px;
+    font-size:13.5px;
+  }
+  nav.toc .toc-eyebrow{
+    text-transform:uppercase;
+    letter-spacing:.09em;
+    font-size:11px;
+    color:var(--ink-faint);
+    font-weight:600;
+    margin-bottom:10px;
+  }
+  nav.toc ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px;}
+  nav.toc li a{
+    display:block;
+    padding:6px 10px;
+    border-radius:7px;
+    color:var(--ink-soft);
+    text-decoration:none;
+    border-left:2px solid transparent;
+  }
+  nav.toc li a:hover{background:var(--surface-2);color:var(--ink);}
+  nav.toc li a.faza-marker{color:var(--ink-faint);font-size:11.5px;padding-top:14px;text-transform:uppercase;letter-spacing:.06em;font-weight:600;pointer-events:none;}
+
+  main{flex:1 1 auto;min-width:0;padding-top:40px;}
+
+  .mobile-toc{display:none;}
+
+  header.doc-head{margin-bottom:40px;}
+  .eyebrow{
+    text-transform:uppercase;
+    letter-spacing:.11em;
+    font-size:12px;
+    font-weight:700;
+    color:var(--accent-ink);
+    margin-bottom:14px;
+  }
+  h1{font-size:clamp(28px,4vw,40px);margin:0 0 14px;}
+  .lede{font-size:17.5px;color:var(--ink-soft);max-width:62ch;margin:0 0 32px;}
+
+  .stat-strip{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+    border-radius:12px;
+    overflow:hidden;
+  }
+  .stat{
+    background:var(--surface);
+    padding:16px 18px;
+  }
+  .stat .num{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:22px;
+    font-weight:600;
+    color:var(--ink);
+    font-variant-numeric:tabular-nums;
+  }
+  .stat .label{font-size:12.5px;color:var(--ink-faint);margin-top:3px;}
+  .stat-note{font-size:12.5px;color:var(--ink-faint);margin-top:10px;}
+
+  section{margin-top:64px;padding-top:8px;scroll-margin-top:24px;}
+  section.faza-section{margin-top:64px;}
+  .section-num{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px;
+    color:var(--accent-ink);
+    font-weight:600;
+    margin-bottom:6px;
+    letter-spacing:.02em;
+  }
+  h2{font-size:25px;margin:0 0 6px;}
+  .section-intro{color:var(--ink-soft);max-width:68ch;margin:10px 0 26px;font-size:15.5px;}
+
+  .prose{max-width:68ch;}
+  .prose p{color:var(--ink-soft);}
+  .prose strong{color:var(--ink);}
+
+  /* Role cards */
+  .role-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:24px 0;}
+  .role-card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:22px 24px;
+    box-shadow:var(--shadow);
+  }
+  .role-card h3{font-size:17px;margin:0 0 4px;display:flex;align-items:center;gap:9px;}
+  .role-dot{width:9px;height:9px;border-radius:50%;flex:none;}
+  .role-card .role-sub{font-size:12.5px;color:var(--ink-faint);margin-bottom:14px;}
+  .role-card ul{margin:0;padding-left:19px;color:var(--ink-soft);font-size:14.5px;}
+  .role-card li{margin-bottom:8px;}
+  .role-card li strong{color:var(--ink);}
+
+  /* Entity cards */
+  .entity-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin:24px 0;}
+  .entity-card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:18px 20px;
+  }
+  .entity-card h4{
+    font-family:'Fraunces',serif;font-size:15.5px;font-weight:600;margin:0 0 8px;
+    display:flex;align-items:baseline;gap:8px;
+  }
+  .entity-card h4 .tag{
+    font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--ink-faint);
+    text-transform:uppercase;letter-spacing:.04em;font-weight:600;
+  }
+  .entity-card .fields{font-size:13.5px;color:var(--ink-soft);line-height:1.65;}
+  .entity-card .fields b{color:var(--ink);font-weight:600;}
+
+  /* status pills */
+  .pill{
+    display:inline-flex;align-items:center;gap:5px;
+    font-size:12px;font-weight:600;padding:3px 10px 3px 8px;border-radius:999px;
+    white-space:nowrap;
+  }
+  .pill::before{content:"";width:6px;height:6px;border-radius:50%;}
+  .pill.ok{background:var(--ok-tint);color:var(--ok);}
+  .pill.ok::before{background:var(--ok);}
+  .pill.info{background:var(--info-tint);color:var(--info);}
+  .pill.info::before{background:var(--info);}
+  .pill.warn{background:var(--warn-tint);color:var(--warn);}
+  .pill.warn::before{background:var(--warn);}
+  .pill.danger{background:var(--danger-tint);color:var(--danger);}
+  .pill.danger::before{background:var(--danger);}
+
+  .pill-legend{display:flex;flex-wrap:wrap;gap:10px 16px;margin:18px 0 8px;}
+  .pill-legend .item{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--ink-soft);}
+
+  /* workflow steps */
+  .flow{counter-reset:step;margin:26px 0;border-left:2px solid var(--line);padding-left:0;}
+  .flow-step{
+    position:relative;
+    padding:0 0 26px 34px;
+    counter-increment:step;
+  }
+  .flow-step:last-child{padding-bottom:2px;}
+  .flow-step::before{
+    content:counter(step);
+    position:absolute;left:-15px;top:-2px;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--surface);border:2px solid var(--accent);
+    color:var(--accent-ink);font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:12.5px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .flow-step h4{margin:2px 0 5px;font-size:15.5px;font-family:'Karla',sans-serif;font-weight:700;color:var(--ink);}
+  .flow-step p{font-size:14.5px;color:var(--ink-soft);margin:0;max-width:62ch;}
+
+  /* generic table */
+  .table-wrap{overflow-x:auto;margin:22px 0;border:1px solid var(--line);border-radius:12px;}
+  table{border-collapse:collapse;width:100%;font-size:14px;min-width:520px;}
+  th{
+    text-align:left;background:var(--surface-2);color:var(--ink-soft);
+    font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;font-weight:700;
+    padding:11px 16px;border-bottom:1px solid var(--line);
+  }
+  td{padding:12px 16px;border-bottom:1px solid var(--line);color:var(--ink-soft);vertical-align:top;}
+  tr:last-child td{border-bottom:none;}
+  td strong{color:var(--ink);font-weight:600;}
+  td code, .fields code{
+    font-family:'IBM Plex Mono',monospace;font-size:12px;background:var(--surface-2);
+    padding:1px 6px;border-radius:5px;color:var(--ink);
+  }
+
+  /* option cards for whatsapp */
+  .option-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:22px 0;}
+  .option-card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px 18px 20px;}
+  .option-card .opt-badge{
+    font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.04em;
+    color:var(--accent-ink);text-transform:uppercase;margin-bottom:8px;display:block;
+  }
+  .option-card h4{font-size:15px;margin:0 0 8px;font-family:'Karla',sans-serif;font-weight:700;}
+  .option-card p{font-size:13.5px;color:var(--ink-soft);margin:0 0 10px;}
+  .option-card .fit{font-size:12px;color:var(--ink-faint);border-top:1px dashed var(--line);padding-top:10px;margin-top:10px;}
+
+  /* proposal list */
+  .proposal-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 20px;margin:22px 0;}
+  .proposal{display:flex;gap:12px;}
+  .proposal .mark{
+    flex:none;width:26px;height:26px;border-radius:7px;background:var(--accent-tint);
+    color:var(--accent-ink);display:flex;align-items:center;justify-content:center;
+    font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;margin-top:1px;
+  }
+  .proposal .txt strong{display:block;font-size:14.5px;color:var(--ink);margin-bottom:2px;}
+  .proposal .txt span{font-size:13.5px;color:var(--ink-soft);}
+
+  /* phases / roadmap */
+  .phase-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:24px 0;}
+  .phase-card{
+    background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px 22px;
+    position:relative;
+  }
+  .phase-card.current{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset;}
+  .phase-label{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;}
+  .phase-card h4{font-size:16px;margin:0 0 10px;}
+  .phase-card ul{margin:0;padding-left:18px;font-size:13.5px;color:var(--ink-soft);}
+  .phase-card li{margin-bottom:6px;}
+
+  .callout{
+    background:var(--accent-tint);border-radius:12px;padding:16px 20px;margin:22px 0;
+    font-size:14px;color:var(--ink);border-left:3px solid var(--accent);
+  }
+  .callout strong{color:var(--accent-ink);}
+
+  hr.div{border:none;border-top:1px solid var(--line);margin:64px 0 0;}
+
+  footer{margin-top:56px;padding-top:22px;border-top:1px solid var(--line);color:var(--ink-faint);font-size:12.5px;}
+
+  @media (max-width: 980px){
+    .role-grid,.entity-grid,.option-grid,.proposal-grid,.phase-grid{grid-template-columns:1fr;}
+    .stat-strip{grid-template-columns:repeat(2,1fr);}
+  }
+  @media (max-width: 860px){
+    nav.toc{display:none;}
+    .layout{gap:0;padding:0 18px 72px;}
+    main{padding-top:24px;}
+    .mobile-toc{
+      display:block;margin-bottom:28px;background:var(--surface);border:1px solid var(--line);
+      border-radius:12px;padding:4px 16px;
+    }
+    .mobile-toc summary{padding:12px 0;font-weight:700;font-size:13.5px;cursor:pointer;color:var(--ink);}
+    .mobile-toc ol{list-style:none;margin:0;padding:0 0 14px;display:flex;flex-direction:column;gap:2px;}
+    .mobile-toc li a{display:block;padding:7px 4px;color:var(--ink-soft);text-decoration:none;font-size:14px;}
+  }
+
+  @media (prefers-reduced-motion: no-preference){
+    nav.toc li a{transition:background .12s ease, color .12s ease;}
+  }
+</style>
+
+<div class="layout">
+  <nav class="toc" aria-label="Cuprins">
+    <div class="toc-eyebrow">Cuprins</div>
+    <ol>
+      <li><a href="#rezumat">Rezumat</a></li>
+      <li><a href="#roluri">Roluri &amp; permisiuni</a></li>
+      <li><a href="#locatii">Locații &amp; camere</a></li>
+      <li><a href="#beneficiari">Beneficiari &amp; cazări</a></li>
+      <li><a href="#flux-solicitare">Flux: solicitare nouă</a></li>
+      <li><a href="#curatenie">Curățenie &amp; chei</a></li>
+      <li><a href="#cheltuieli">Cheltuieli &amp; mentenanță</a></li>
+      <li><a href="#voluntari">Implicarea voluntarilor</a></li>
+      <li><a href="#notificari">Notificări</a></li>
+      <li><a href="#whatsapp">WhatsApp &amp; contacte</a></li>
+      <li><a href="#confidentialitate">Confidențialitate</a></li>
+      <li><a href="#propuneri">Propuneri suplimentare</a></li>
+      <li><a class="faza-marker">Foaie de parcurs</a></li>
+      <li><a href="#faze">Faze de dezvoltare</a></li>
+      <li><a href="#pasi">Pașii următori</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <header class="doc-head">
+      <div class="eyebrow">Plan de aplicație · Asociația Emaus</div>
+      <h1>De la agende WhatsApp risipite la o singură evidență, vie, a fiecărei găzduiri</h1>
+      <p class="lede">Acest document propune structura funcțională a unei aplicații mobile + web pentru voluntarii și nucleul Emaus, pornind chiar de la evidența folosită acum — fișierul de programare cazări — și de la fluxul descris: solicitări noi, aprobări, curățenie, chei, cheltuieli și implicare a voluntarilor.</p>
+
+      <div class="stat-strip">
+        <div class="stat"><div class="num">8</div><div class="label">locații urmărite azi (fixe + intermediare/AirBnB)</div></div>
+        <div class="stat"><div class="num">360+</div><div class="label">cazări înregistrate în istoric</div></div>
+        <div class="stat"><div class="num">80+</div><div class="label">localități de proveniență ale beneficiarilor</div></div>
+        <div class="stat"><div class="num">din 2022</div><div class="label">istoric păstrat, azi împrăștiat în 10 foi Excel</div></div>
+      </div>
+      <p class="stat-note">Cifre estimate din fișierul „Programare cazări.xlsx" trimis — utile ca reper de scară pentru aplicație, nu ca statistică oficială (fișierul are rânduri duplicate/incomplete, ceea ce e chiar unul din problemele pe care aplicația le rezolvă).</p>
+    </header>
+
+    <details class="mobile-toc">
+      <summary>Cuprins document</summary>
+      <ol>
+        <li><a href="#rezumat">Rezumat</a></li>
+        <li><a href="#roluri">Roluri &amp; permisiuni</a></li>
+        <li><a href="#locatii">Locații &amp; camere</a></li>
+        <li><a href="#beneficiari">Beneficiari &amp; cazări</a></li>
+        <li><a href="#flux-solicitare">Flux: solicitare nouă</a></li>
+        <li><a href="#curatenie">Curățenie &amp; chei</a></li>
+        <li><a href="#cheltuieli">Cheltuieli &amp; mentenanță</a></li>
+        <li><a href="#voluntari">Implicarea voluntarilor</a></li>
+        <li><a href="#notificari">Notificări</a></li>
+        <li><a href="#whatsapp">WhatsApp &amp; contacte</a></li>
+        <li><a href="#confidentialitate">Confidențialitate</a></li>
+        <li><a href="#propuneri">Propuneri suplimentare</a></li>
+        <li><a href="#faze">Faze de dezvoltare</a></li>
+        <li><a href="#pasi">Pașii următori</a></li>
+      </ol>
+    </details>
+
+    <section id="rezumat">
+      <div class="section-num">01</div>
+      <h2>Rezumat</h2>
+      <div class="prose">
+        <p>Emaus oferă găzduire gratuită unor persoane venite mai ales pentru tratament oncologic. Munca reală se întâmplă în teren — chei predate, curățenie făcută, cineva sosește, altcineva pleacă — dar evidența ei trăiește azi în WhatsApp și într-un fișier Excel cu o foaie pe apartament. Funcționează, dar cere memorie și coordonare manuală: nu există un singur loc din care să vezi <em>acum</em> ce e liber, cine trebuie notificat, ce trebuie curățat sau ce reparație așteaptă pe cineva cu timp liber.</p>
+        <p>Aplicația propusă păstrează exact ce funcționează în fluxul actual (solicitare → decizie → cazare → curățenie → eliberare) și adaugă ce lipsește: <strong>status vizibil în timp real</strong> pentru fiecare locație, <strong>notificări</strong> către nucleu la orice solicitare nouă, <strong>aprobare cu comentarii</strong> păstrate ca istoric, și o evidență a <strong>cheltuielilor mici de întreținere</strong> pe care oricine cu timp liber le poate prelua.</p>
+        <p>E gândită pentru doi utilizatori interni — <strong>voluntari</strong> și <strong>nucleu</strong> — nu pentru beneficiari, care rămân contactați ca și acum, prin telefon sau WhatsApp.</p>
+      </div>
+    </section>
+
+    <section id="roluri">
+      <div class="section-num">02</div>
+      <h2>Roluri &amp; permisiuni</h2>
+      <p class="section-intro">Doi roluri de bază, pentru MVP. Rolul unui utilizator poate fi extins mai târziu (ex. „responsabil chei" sau „responsabil cheltuieli" ca etichete suplimentare peste rolul de bază), dar pentru start doar distincția voluntar / nucleu contează pentru cine decide.</p>
+
+      <div class="role-grid">
+        <div class="role-card">
+          <h3><span class="role-dot" style="background:var(--info)"></span>Voluntar</h3>
+          <div class="role-sub">membru activ — curățenie, evenimente, vizite, promovare</div>
+          <ul>
+            <li>Vede statusul tuturor locațiilor și calendarul de ocupare</li>
+            <li>Se înscrie la ture de curățenie, evenimente, vizite, acțiuni de promovare</li>
+            <li>Introduce o <strong>solicitare nouă de cazare</strong> (merge automat spre aprobare)</li>
+            <li>Deschide o <strong>sesizare</strong> pentru o nevoie de întreținere (ex. hârtie igienică, robinet stricat)</li>
+            <li>Adaugă comentarii/observații pe o cazare sau solicitare</li>
+            <li>Marchează o locație „igienizată" după curățenie</li>
+          </ul>
+        </div>
+        <div class="role-card">
+          <h3><span class="role-dot" style="background:var(--accent)"></span>Nucleu</h3>
+          <div class="role-sub">tot ce poate un voluntar, plus decizie și administrare</div>
+          <ul>
+            <li>Primește <strong>notificare</strong> la fiecare solicitare nouă</li>
+            <li>Aprobă / respinge solicitări, cu motiv înregistrat</li>
+            <li>Alocă beneficiarul unei locații și perioade anume</li>
+            <li>Poate <strong>bloca</strong> un beneficiar sau o locație (ex. „blocat din 15 septembrie", caz întâlnit azi în evidență)</li>
+            <li>Prioritizează și asignează cheltuielile/reparațiile</li>
+            <li>Gestionează utilizatorii, rolurile și vede rapoarte/solduri complete</li>
+          </ul>
+        </div>
+      </div>
+      <div class="callout"><strong>De reținut —</strong> orice acțiune „sensibilă" (aprobare, blocare, alocare) rămâne exclusiv la nucleu; voluntarul poate <em>propune</em> și <em>semnala</em>, nu poate decide singur. Asta reproduce fidel cum funcționează azi echipa, doar că informatizat.</div>
+    </section>
+
+    <section id="locatii">
+      <div class="section-num">03</div>
+      <h2>Locații &amp; camere</h2>
+      <p class="section-intro">În evidența actuală, o „locație" poate fi un apartament întreg sau o cameră dintr-un apartament comun (ex. „Traian Popovici — dormitor" și „— sufragerie" apar ca unități separate, fiecare cu propriul status). Aplicația păstrează exact această granularitate.</p>
+
+      <p style="font-size:14.5px;color:var(--ink-soft);margin-bottom:6px;"><strong style="color:var(--ink)">Stările unei unități</strong> — reflectă exact valorile folosite azi în Excel, plus una nouă de tranziție:</p>
+      <div class="pill-legend">
+        <div class="item"><span class="pill info">Ocupat</span> beneficiar prezent</div>
+        <div class="item"><span class="pill warn">Necesită curățenie</span> nou — golit, nu încă igienizat</div>
+        <div class="item"><span class="pill ok">Liber &amp; igienizat</span> disponibil imediat</div>
+        <div class="item"><span class="pill info">În așteptare</span> solicitare în curs de decizie</div>
+        <div class="item"><span class="pill danger">Indisponibil / blocat</span> reparație, conflict, alt motiv</div>
+      </div>
+
+      <div class="entity-card" style="margin-top:22px;max-width:560px;">
+        <h4>Locație / cameră <span class="tag">entitate</span></h4>
+        <div class="fields">
+          <b>adresă</b> completă + <b>tip unitate</b> (apartament întreg / cameră) · <b>capacitate</b> (persoane) · <b>status curent</b> · <b>deținători chei</b> (1–4 persoane, ca azi) · <b>notițe permanente</b> (ex. etaj fără lift, acces cu cod)
+        </div>
+      </div>
+    </section>
+
+    <section id="beneficiari">
+      <div class="section-num">04</div>
+      <h2>Beneficiari &amp; istoric de cazări</h2>
+      <p class="section-intro">Fiecare foaie de apartament ține azi, per persoană: nume, domiciliu, telefon, perioadă solicitată vs. realizată, vârstă, situație materială, cum a aflat de Emaus, observații. Modelul de mai jos preia exact aceste câmpuri și le leagă de o singură fișă de beneficiar, vizibilă din orice locație în care a stat.</p>
+
+      <div class="entity-grid">
+        <div class="entity-card">
+          <h4>Beneficiar <span class="tag">entitate</span></h4>
+          <div class="fields">
+            <b>nume</b> · <b>telefon</b> · <b>localitate domiciliu</b> (din listă standard de județe — evită azi dubluri gen „Bacau" / „Bacău") · <b>vârstă</b> · <b>situație materială</b> · <b>sursă</b> („cum a aflat de noi") · <b>status</b>: activ / blocat · <b>observații</b> · <b>sold cont</b> (dacă asociația urmărește contribuții/costuri per persoană, ca azi)
+          </div>
+        </div>
+        <div class="entity-card">
+          <h4>Cazare <span class="tag">entitate</span></h4>
+          <div class="fields">
+            <b>beneficiar</b> · <b>locație</b> · <b>perioadă solicitată</b> (sosire–plecare) · <b>perioadă realizată</b> · <b>status</b>: <code>în așteptare / aprobată / respinsă / activă / încheiată</code> · <b>decisă de</b> (membru nucleu) · <b>comentarii</b> (fir de discuție, nu un singur câmp text)
+          </div>
+        </div>
+      </div>
+      <p class="prose" style="max-width:68ch;font-size:14.5px;color:var(--ink-soft);">Fișa beneficiarului adună automat <strong>tot istoricul</strong> lui — util azi doar prin căutare manuală în 8 foi separate: de câte ori a stat, unde, câte zile în total, dacă a fost vreodată blocat și de ce.</p>
+    </section>
+
+    <section id="flux-solicitare">
+      <div class="section-num">05</div>
+      <h2>Fluxul unei solicitări noi</h2>
+      <p class="section-intro">Pasul central al aplicației: o solicitare nu devine niciodată cazare fără decizia explicită a nucleului, dar nici nu se pierde pe drum — fiecare pas notifică pe cine trebuie.</p>
+
+      <div class="flow">
+        <div class="flow-step">
+          <h4>Cineva introduce solicitarea</h4>
+          <p>Un voluntar sau un membru al nucleului adaugă beneficiarul (sau îl regăsește, dacă a mai stat) și perioada dorită — la fel cum se face azi cererea primită pe WhatsApp, doar că intră direct în sistem.</p>
+        </div>
+        <div class="flow-step">
+          <h4>Nucleul e notificat automat</h4>
+          <p>Toți membrii nucleului primesc o notificare „solicitare nouă" — nimeni nu mai trebuie să întrebe „ați văzut mesajul din grup?".</p>
+        </div>
+        <div class="flow-step">
+          <h4>Discuție &amp; observații, păstrate</h4>
+          <p>Nucleul poate lăsa comentarii direct pe solicitare înainte de decizie (ex. „verificăm dacă a mai fost blocat"). Comentariile rămân atașate solicitării, nu se pierd într-un chat.</p>
+        </div>
+        <div class="flow-step">
+          <h4>Decizie: aprobată sau respinsă</h4>
+          <p>Cu motiv înregistrat. O respingere cu motiv e utilă istoric — mai ales dacă beneficiarul revine cu o cerere similară peste luni.</p>
+        </div>
+        <div class="flow-step">
+          <h4>Alocare locație</h4>
+          <p>Dacă e aprobată, nucleul alege dintre unitățile marcate „liber &amp; igienizat" pentru perioada cerută. Locația trece în <span class="pill info">Ocupat</span>.</p>
+        </div>
+        <div class="flow-step">
+          <h4>La plecare, curățenia preia automat</h4>
+          <p>La check-out, locația trece singură în <span class="pill warn">Necesită curățenie</span> — următoarea secțiune arată ce se întâmplă apoi.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="curatenie">
+      <div class="section-num">06</div>
+      <h2>Curățenie &amp; chei</h2>
+      <div class="prose">
+        <p>Azi, curățenia are propria evidență (foaia „Curățenie &amp; Vizite"): fiecare locație are o zi fixă de curățenie și 1–4 responsabili rotativi, plus o listă separată a cui deține cheile fiecărei locații. Aplicația păstrează ambele, dar le leagă de statusul locației, nu doar de un calendar static.</p>
+      </div>
+      <div class="entity-grid">
+        <div class="entity-card">
+          <h4>Tură de curățenie <span class="tag">entitate</span></h4>
+          <div class="fields">
+            <b>locație</b> · <b>zi programată</b> (rotativă, ca azi) · <b>responsabili</b> (1–4 voluntari) · <b>status</b>: <code>de făcut / în curs / igienizat</code> · <b>observații</b>
+          </div>
+        </div>
+        <div class="entity-card">
+          <h4>Chei <span class="tag">entitate</span></h4>
+          <div class="fields">
+            <b>locație</b> · <b>deținători curenți</b> · <b>istoric predare</b> (cine a avut cheia și când) — util când o cheie „dispare" între doi voluntari
+          </div>
+        </div>
+      </div>
+      <p class="prose" style="max-width:68ch;font-size:14.5px;color:var(--ink-soft);">Când o locație intră în <span class="pill warn">Necesită curățenie</span>, responsabilii ei rotativi primesc notificare automat — nu mai depinde de cineva care își amintește să scrie în grup.</p>
+    </section>
+
+    <section id="cheltuieli">
+      <div class="section-num">07</div>
+      <h2>Cheltuieli &amp; mentenanță</h2>
+      <p class="section-intro">Exact ideea menționată: o garsonieră are nevoie de hârtie igienică sau de o reparație — trebuie undeva unde oricine cu timp disponibil o poate prelua, fără să treacă printr-un mesaj care se pierde în conversație.</p>
+
+      <div class="flow">
+        <div class="flow-step">
+          <h4>Sesizare</h4>
+          <p>Oricine (voluntar sau nucleu) deschide o sesizare pe o locație: tip (consumabile / reparație / urgență), descriere, cost estimat, eventual o poză.</p>
+        </div>
+        <div class="flow-step">
+          <h4>Prioritizare &amp; asignare</h4>
+          <p>Nucleul (sau un responsabil desemnat) stabilește prioritatea și o asignează cuiva cu timp liber — sau rămâne „neasignată" ca listă deschisă din care se poate prelua voluntar.</p>
+        </div>
+        <div class="flow-step">
+          <h4>Rezolvare &amp; cost final</h4>
+          <p>Persoana asignată marchează sesizarea „rezolvată", cu costul real, dacă a existat. Istoricul rămâne pe locație — util pentru a vedea, de exemplu, ce apartament are reparații recurente.</p>
+        </div>
+      </div>
+      <div class="callout">Legătură firească cu <strong>„sold cont"</strong> din evidența actuală: dacă asociația urmărește deja un cont per beneficiar sau per locație, cheltuielile de mentenanță se pot aduna acolo pentru o imagine simplă a costurilor reale ale găzduirii.</div>
+    </section>
+
+    <section id="voluntari">
+      <div class="section-num">08</div>
+      <h2>Implicarea voluntarilor</h2>
+      <div class="prose">
+        <p>Pe lângă curățenie, voluntarii participă la evenimente, acțiuni promoționale și vizite la beneficiari. Propunem un singur calendar de <strong>oportunități de implicare</strong>, cu înscriere directă:</p>
+      </div>
+      <div class="entity-card" style="max-width:620px;">
+        <h4>Eveniment / oportunitate <span class="tag">entitate</span></h4>
+        <div class="fields">
+          <b>tip</b>: curățenie / eveniment / vizită / promovare · <b>dată &amp; locație</b> · <b>locuri disponibile</b> · <b>voluntari înscriși</b> · <b>descriere</b>
+        </div>
+      </div>
+      <p class="prose" style="max-width:68ch;font-size:14.5px;color:var(--ink-soft);margin-top:14px;">Fază ulterioară utilă: un contor simplu de <strong>ore de voluntariat</strong> per persoană — nu neapărat „gamificare", ci un mod onest de a recunoaște implicarea constantă și, la nevoie, de a genera o adeverință de voluntariat.</p>
+    </section>
+
+    <section id="notificari">
+      <div class="section-num">09</div>
+      <h2>Notificări</h2>
+      <p class="section-intro">Notificările sunt ce leagă toate fluxurile de mai sus — fără ele, aplicația e doar un Excel mai frumos. Fiecare tip merge exact către rolul care trebuie să acționeze:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Eveniment</th><th>Cine primește</th><th>Acțiune așteptată</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Solicitare nouă de cazare</strong></td><td>Nucleu</td><td>Aprobă / respinge, cu comentariu</td></tr>
+            <tr><td><strong>Locație → „necesită curățenie"</strong></td><td>Responsabilii ei rotativi</td><td>Preiau tura, marchează igienizat</td></tr>
+            <tr><td><strong>Sesizare nouă de mentenanță</strong></td><td>Nucleu (sau responsabil cheltuieli)</td><td>Prioritizează, asignează</td></tr>
+            <tr><td><strong>Sesizare asignată ție</strong></td><td>Voluntarul asignat</td><td>Rezolvă, marchează cost final</td></tr>
+            <tr><td><strong>Comentariu nou pe o solicitare</strong></td><td>Ceilalți membri nucleu implicați</td><td>Citește, eventual răspunde</td></tr>
+            <tr><td><strong>Eveniment/tură nouă publicată</strong></td><td>Toți voluntarii</td><td>Se pot înscrie</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="whatsapp">
+      <div class="section-num">10</div>
+      <h2>WhatsApp &amp; adăugare din contacte</h2>
+      <div class="prose">
+        <p>E cererea cea mai delicată tehnic, așa că merită onestitate din start: WhatsApp nu permite „citire automată" a unui cont personal existent de nicio aplicație terță — ar încălca termenii lor, indiferent de intenția bună din spate. Există însă trei niveluri realiste, de la simplu la avansat:</p>
+      </div>
+      <div class="option-grid">
+        <div class="option-card">
+          <span class="opt-badge">Nivel 1 · MVP</span>
+          <h4>Adăugare din agendă telefonului</h4>
+          <p>La creare beneficiar nou, un buton deschide agenda telefonului (pe mobil) și preia automat nume + telefon — elimină retastarea, fără nicio integrare externă.</p>
+          <div class="fit">Gata de implementat din prima versiune.</div>
+        </div>
+        <div class="option-card">
+          <span class="opt-badge">Nivel 2 · rapid</span>
+          <h4>Buton „scrie pe WhatsApp"</h4>
+          <p>Din fișa beneficiarului, un buton deschide direct conversația WhatsApp cu numărul lui (link <code>wa.me</code>) — comod, dar nu citește nimic automat.</p>
+          <div class="fit">Simplu, zero cost, zero aprobări externe.</div>
+        </div>
+        <div class="option-card">
+          <span class="opt-badge">Nivel 3 · fază 3</span>
+          <h4>WhatsApp Business API</h4>
+          <p>Un număr Business dedicat Emaus (nu contul personal actual) poate trimite mesajele primite direct în aplicație ca „solicitare nouă" candidată.</p>
+          <div class="fit">Necesită cont Business verificat Meta, cost per conversație și migrarea treptată de pe numărul actual — recomandat abia după ce fluxul de bază e stabil.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="confidentialitate">
+      <div class="section-num">11</div>
+      <h2>Confidențialitate &amp; date sensibile</h2>
+      <div class="prose">
+        <p>Fișa unui beneficiar conține date sensibile prin natura lor — context medical (motiv oncologic), situație materială, uneori statut de refugiat. Câteva reguli simple, de la început:</p>
+        <p><strong>Acces gradual</strong>: orice voluntar vede că o unitate e ocupată și pentru cât timp, dar nu neapărat detaliile medicale sau financiare ale beneficiarului — acelea rămân vizibile doar nucleului, sau unui sub-set „date sensibile" configurabil.</p>
+        <p><strong>Consimțământ &amp; ștergere</strong>: la înregistrarea unui beneficiar nou, o bifă simplă de acord privind păstrarea datelor, cu posibilitatea reală de ștergere la cerere.</p>
+        <p><strong>Jurnal de modificări</strong>: cine a schimbat un status sau a aprobat o solicitare rămâne înregistrat — util atât pentru încredere internă, cât și pentru situații de dispută.</p>
+      </div>
+    </section>
+
+    <section id="propuneri">
+      <div class="section-num">12</div>
+      <h2>Propuneri suplimentare</h2>
+      <p class="section-intro">Idei care nu au fost cerute explicit, dar reies direct din tiparele văzute în evidența actuală:</p>
+      <div class="proposal-grid">
+        <div class="proposal"><div class="mark">01</div><div class="txt"><strong>Listă de așteptare</strong><span>când nu există nicio unitate liberă în perioada cerută, solicitarea intră automat într-o coadă, nu se pierde.</span></div></div>
+        <div class="proposal"><div class="mark">02</div><div class="txt"><strong>Calendar de disponibilitate</strong><span>o vedere de tip calendar per locație, ca să se vadă dintr-o privire perioadele libere viitoare — util la programarea din timp.</span></div></div>
+        <div class="proposal"><div class="mark">03</div><div class="txt"><strong>Localități standardizate</strong><span>listă/autocomplete de județe la completarea domiciliului — azi „Bacau" și „Bacău" apar ca valori diferite în evidență.</span></div></div>
+        <div class="proposal"><div class="mark">04</div><div class="txt"><strong>Rapoarte pentru donatori</strong><span>export automat: zile de cazare, beneficiari unici, distribuție geografică — peste 80 de localități diferite azi, un argument concret pentru rapoarte anuale.</span></div></div>
+        <div class="proposal"><div class="mark">05</div><div class="txt"><strong>Mod fără conexiune</strong><span>multe locații au semnal slab — un voluntar trebuie să poată marca „igienizat" offline și sincroniza mai târziu.</span></div></div>
+        <div class="proposal"><div class="mark">06</div><div class="txt"><strong>Bază minimă multi-limbă</strong><span>evidența arată deja beneficiari din Ucraina — câteva câmpuri/traduceri de bază ajută comunicarea cu beneficiari străini.</span></div></div>
+        <div class="proposal"><div class="mark">07</div><div class="txt"><strong>Export &amp; backup periodic</strong><span>indiferent de tehnologie, un export regulat (ex. lunar) în format tabelar, ca plasă de siguranță independentă de aplicație.</span></div></div>
+        <div class="proposal"><div class="mark">08</div><div class="txt"><strong>Tablou general „dintr-o privire"</strong><span>o hartă/grilă cu toate locațiile și culoarea statusului lor curent — ecranul de pornire firesc pentru nucleu.</span></div></div>
+      </div>
+    </section>
+
+    <hr class="div" id="faze-anchor">
+
+    <section id="faze" class="faza-section">
+      <div class="section-num">13</div>
+      <h2>Faze de dezvoltare</h2>
+      <p class="section-intro">Trei faze, ca să existe ceva funcțional rapid și ca deciziile de tehnologie să vină abia după ce scopul e clar — exact ordinea propusă chiar de asociație.</p>
+      <div class="phase-grid">
+        <div class="phase-card current">
+          <div class="phase-label">Faza 1 — nucleul de bază</div>
+          <h4>Ce înlocuiește Excel-ul mâine</h4>
+          <ul>
+            <li>Locații + status live</li>
+            <li>Beneficiari + istoric cazări</li>
+            <li>Flux solicitare → aprobare → notificare</li>
+            <li>Curățenie + chei</li>
+            <li>Sesizări de mentenanță simple</li>
+            <li>Roluri voluntar / nucleu</li>
+          </ul>
+        </div>
+        <div class="phase-card">
+          <div class="phase-label">Faza 2 — coordonare mai fină</div>
+          <h4>Ce ușurează organizarea zilnică</h4>
+          <ul>
+            <li>Calendar de disponibilitate</li>
+            <li>Listă de așteptare</li>
+            <li>Rapoarte &amp; statistici, export donatori</li>
+            <li>Adăugare beneficiar din contacte</li>
+            <li>Buton „scrie pe WhatsApp"</li>
+          </ul>
+        </div>
+        <div class="phase-card">
+          <div class="phase-label">Faza 3 — extindere</div>
+          <h4>Ce merită timp dedicat</h4>
+          <ul>
+            <li>WhatsApp Business API (număr dedicat)</li>
+            <li>Mod fără conexiune</li>
+            <li>Bază multi-limbă</li>
+            <li>Jurnal complet de audit</li>
+            <li>Ore de voluntariat / recunoaștere</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="pasi">
+      <div class="section-num">14</div>
+      <h2>Pașii următori</h2>
+      <div class="prose">
+        <p>Cu planul funcțional conturat, următoarele decizii rămân, în ordine:</p>
+        <p><strong>1. Validare cu nucleul</strong> — de confirmat mai ales granularitatea locațiilor (cameră vs. apartament), câmpurile din fișa beneficiarului considerate sensibile, și dacă „sold cont" chiar trebuie păstrat.</p>
+        <p><strong>2. Maparea datelor existente</strong> — coloanele din cele 8 foi de apartament devin coloanele entităților <em>Beneficiar</em> și <em>Cazare</em> de mai sus; migrarea istoricului e directă odată ce modelul e agreat.</p>
+        <p><strong>3. Alegerea tehnologiei</strong> — abia acum, cu scopul clar: probabil o singură bază de cod pentru mobil + web (ex. React Native/Expo cu variantă web, sau Flutter), plus un backend simplu cu notificări push — de discutat separat, cum ați menționat.</p>
+        <p><strong>4. Un prim ecran de test</strong> — un wireframe al ecranului „toate locațiile, dintr-o privire" e un candidat bun de prim pas vizual, fiind ecranul folosit zilnic de nucleu.</p>
+      </div>
+    </section>
+
+    <footer>
+      Document de plan — Asociația Emaus · redactat pe baza fluxului descris și a fișierului „Programare cazări.xlsx" · 29 august 2026
+    </footer>
+  </main>
+</div>

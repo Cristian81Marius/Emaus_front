@@ -1,0 +1,51 @@
+{
+  "expo": {
+    "name": "Emaus",
+    "slug": "emaus-app",
+    "owner": "marius.ichimas",
+    "scheme": "emausapp",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "plugins": [
+      "expo-router",
+      "expo-font",
+      "expo-local-authentication"
+    ],
+    "extra": {
+      "apiBaseUrl": "https://motorcycles-vegetarian-happened-moment.trycloudflare.com",
+      "router": {},
+      "eas": {
+        "projectId": "370f42ac-1673-457f-88a5-fcd884248ee1"
+      }
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "ro.emaus.app",
+      "infoPlist": {
+        "NSFaceIDUsageDescription": "Emaus folosește Face ID pentru deblocarea rapidă a aplicației pe acest dispozitiv."
+      }
+    },
+    "android": {
+      "package": "ro.emaus.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#F1E2D3",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false,
+      "permissions": [
+        "android.permission.USE_BIOMETRIC",
+        "android.permission.USE_FINGERPRINT"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro",
+      "output": "static"
+    }
+  }
+}

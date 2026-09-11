@@ -1,0 +1,25 @@
+# .NET
+backend/**/bin/
+backend/**/obj/
+backend/**/*.db
+backend/**/*.db-shm
+backend/**/*.db-wal
+*.user
+
+# Secrete — chei de cont de service, certificate etc. Niciodată în git.
+backend/**/secrets/
+
+# Node / Expo / React Native
+mobile/node_modules/
+mobile/.expo/
+mobile/dist/
+mobile/web-build/
+mobile/*.log
+npm-debug.log*
+
+# Editor / OS
+.vs/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
