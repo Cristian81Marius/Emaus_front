@@ -4,24 +4,28 @@ import { Stack } from "expo-router";
 import { ScreenContainer } from "../../src/components/ScreenContainer";
 import { Card } from "../../src/components/Card";
 import { PrimaryButton } from "../../src/components/PrimaryButton";
-import { DOCUMENTS, DocumentKey } from "../../src/documents/registry";
-import { generatePlaceholderPdf } from "../../src/documents/pdf";
+import { DOCUMENTS, DocumentInfo, DocumentKey } from "../../src/documents/registry";
+import { downloadAndSharePdf, generatePlaceholderPdf } from "../../src/documents/pdf";
 import { useThemeColors, fonts, spacing } from "../../src/theme/tokens";
 
-/** Documente utile Emaus — contracte/formulare, deocamdată placeholder (generate pe
- * loc ca PDF, vezi src/documents/pdf.ts) până vin fișierele reale de la utilizator —
- * vezi src/documents/registry.ts pentru cum se înlocuiesc. Contractul de cazare NU mai
- * e aici — are text legal real, generat per-cazare din app/bookings/[id].tsx. */
+/** Documente utile Emaus — contracte/formulare. Cele cu fișier real (`hasRealFile`,
+ * vezi src/documents/registry.ts) se descarcă de pe backend; restul generează un PDF
+ * placeholder pe loc (src/documents/pdf.ts), ca lista să nu fie goală. Contractul de
+ * cazare NU e aici — are text legal real, generat per-cazare din app/bookings/[id].tsx. */
 export default function DocumentsScreen() {
   const colors = useThemeColors();
   const [busyKey, setBusyKey] = useState<DocumentKey | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const openPlaceholder = async (key: DocumentKey, title: string) => {
-    setBusyKey(key);
+  const openDocument = async (doc: DocumentInfo) => {
+    setBusyKey(doc.key);
     setError(null);
     try {
-      await generatePlaceholderPdf(title);
+      if (doc.hasRealFile && doc.downloadPath) {
+        await downloadAndSharePdf(doc.downloadPath, `${doc.title}.pdf`, doc.title);
+      } else {
+        await generatePlaceholderPdf(doc.title);
+      }
     } catch {
       setError("Nu am putut deschide documentul.");
     } finally {
@@ -53,7 +57,7 @@ export default function DocumentsScreen() {
                 label="Deschide"
                 variant="secondary"
                 loading={busyKey === doc.key}
-                onPress={() => openPlaceholder(doc.key, doc.title)}
+                onPress={() => openDocument(doc)}
               />
             </View>
           </Card>
