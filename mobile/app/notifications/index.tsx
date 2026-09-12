@@ -6,6 +6,7 @@ import { Card } from "../../src/components/Card";
 import { api, ApiError } from "../../src/api/client";
 import { NotificationDto, NotificationType } from "../../src/api/types";
 import { useThemeColors, fonts, spacing } from "../../src/theme/tokens";
+import { SkeletonList } from "../../src/components/Skeleton";
 
 const MESSAGE_ICON: Record<NotificationType, string> = {
   NewBookingRequest: "📋",
@@ -69,6 +70,12 @@ export default function NotificationsScreen() {
       </Pressable>
 
       {error && <Text style={{ color: colors.danger }}>{error}</Text>}
+
+      {!items && (
+        <View style={{ marginTop: spacing.sm }}>
+          <SkeletonList count={6} lines={1} withPill={false} />
+        </View>
+      )}
 
       <ScrollView style={styles.list} contentContainerStyle={{ gap: spacing.sm, paddingBottom: spacing.xxl }}>
         {items?.length === 0 && (

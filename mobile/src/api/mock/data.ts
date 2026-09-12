@@ -167,6 +167,7 @@ export const properties: PropertyDto[] = [
     keyNotes: "1 cheie - la beneficiari",
     lifetimeStayDays: 997,
     lifetimeBookingsCompleted: 58,
+    isArchived: false,
     units: [{ id: "unit-laborator-124", propertyId: "prop-laborator-124", name: "Ap. 124", capacity: 3, status: "Available", statusNotes: null }],
   },
   {
@@ -180,6 +181,7 @@ export const properties: PropertyDto[] = [
     keyNotes: "1 cheie - la beneficiari",
     lifetimeStayDays: 789,
     lifetimeBookingsCompleted: 52,
+    isArchived: false,
     units: [{ id: "unit-laborator-94", propertyId: "prop-laborator-94", name: "Ap. 94", capacity: 3, status: "Available", statusNotes: null }],
   },
   {
@@ -193,6 +195,7 @@ export const properties: PropertyDto[] = [
     keyNotes: "1 cheie la beneficiari",
     lifetimeStayDays: 742,
     lifetimeBookingsCompleted: 32,
+    isArchived: false,
     units: [{ id: "unit-dristorului-893", propertyId: "prop-dristorului-893", name: "Ap. 893", capacity: 3, status: "Occupied", statusNotes: null }],
   },
   {
@@ -206,6 +209,7 @@ export const properties: PropertyDto[] = [
     keyNotes: null,
     lifetimeStayDays: null,
     lifetimeBookingsCompleted: null,
+    isArchived: false,
     units: [{ id: "unit-dristorului-parter", propertyId: "prop-dristorului-parter", name: "Parter", capacity: 2, status: "Available", statusNotes: null }],
   },
   {
@@ -219,6 +223,7 @@ export const properties: PropertyDto[] = [
     keyNotes: "1 cheie la beneficiari",
     lifetimeStayDays: 568,
     lifetimeBookingsCompleted: 29,
+    isArchived: false,
     units: [{ id: "unit-vlad-judetul", propertyId: "prop-vlad-judetul", name: "Ap. 37", capacity: 2, status: "Occupied", statusNotes: null }],
   },
   {
@@ -232,6 +237,7 @@ export const properties: PropertyDto[] = [
     keyNotes: "2 chei la beneficiari",
     lifetimeStayDays: 523,
     lifetimeBookingsCompleted: 51,
+    isArchived: false,
     units: [
       { id: "unit-traian-sufragerie", propertyId: "prop-traian-popovici", name: "Sufragerie", capacity: 3, status: "Occupied", statusNotes: null },
       { id: "unit-traian-dormitor", propertyId: "prop-traian-popovici", name: "Dormitor", capacity: 2, status: "Occupied", statusNotes: null },
@@ -248,6 +254,7 @@ export const properties: PropertyDto[] = [
     keyNotes: "2 chei la beneficiari",
     lifetimeStayDays: 191,
     lifetimeBookingsCompleted: 25,
+    isArchived: false,
     units: [
       { id: "unit-stanescu-sufragerie", propertyId: "prop-stanescu-gheorghe", name: "Sufragerie", capacity: 3, status: "Occupied", statusNotes: null },
       { id: "unit-stanescu-dormitor", propertyId: "prop-stanescu-gheorghe", name: "Dormitor", capacity: 2, status: "Occupied", statusNotes: null },
@@ -264,6 +271,7 @@ export const properties: PropertyDto[] = [
     keyNotes: null,
     lifetimeStayDays: 801,
     lifetimeBookingsCompleted: 37,
+    isArchived: false,
     units: [{ id: "unit-elev-stefanescu", propertyId: "prop-elev-stefanescu", name: "Ap. 32", capacity: 3, status: "Available", statusNotes: null }],
   },
   {
@@ -277,6 +285,7 @@ export const properties: PropertyDto[] = [
     keyNotes: null,
     lifetimeStayDays: 94,
     lifetimeBookingsCompleted: 25,
+    isArchived: false,
     units: [{ id: "unit-airbnb", propertyId: "prop-airbnb-temporar", name: "Locație temporară", capacity: 2, status: "Available", statusNotes: null }],
   },
 ];

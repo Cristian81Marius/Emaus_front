@@ -7,6 +7,7 @@ import { PhoneField } from "../src/components/PhoneActions";
 import { api, ApiError } from "../src/api/client";
 import { OverviewStatsDto } from "../src/api/types";
 import { useThemeColors, fonts, spacing, radius } from "../src/theme/tokens";
+import { SkeletonList } from "../src/components/Skeleton";
 
 /** Dashboard general — un singur ecran cu tot ce răspunde la "cum stăm acum",
  * reachable din Meniu. Toate cifrele vin din `GET /api/stats/overview` (extins cu
@@ -35,6 +36,12 @@ export default function DashboardScreen() {
       <Stack.Screen options={{ headerShown: true, title: "Dashboard" }} />
 
       {error && <Text style={{ color: colors.danger }}>{error}</Text>}
+
+      {!stats && (
+        <View style={{ marginTop: spacing.md }}>
+          <SkeletonList count={4} lines={1} withPill={false} />
+        </View>
+      )}
 
       {stats && (
         <ScrollView style={{ flex: 1 }} contentContainerStyle={{ gap: spacing.md, paddingBottom: spacing.xxl }}>

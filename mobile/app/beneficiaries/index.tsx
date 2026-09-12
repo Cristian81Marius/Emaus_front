@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from "react";
 import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View } from "react-native";
-import { Link, Stack, useFocusEffect, useRouter } from "expo-router";
+import { Link, Stack, useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ScreenContainer } from "../../src/components/ScreenContainer";
 import { Card } from "../../src/components/Card";
@@ -8,6 +8,7 @@ import { BOTTOM_TAB_BAR_HEIGHT } from "../../src/components/BottomTabBar";
 import { Field } from "../../src/components/Field";
 import { PhoneActions } from "../../src/components/PhoneActions";
 import { BeneficiaryStatusPill } from "../../src/components/StatusPill";
+import { SkeletonList } from "../../src/components/Skeleton";
 import { api, ApiError } from "../../src/api/client";
 import { BeneficiaryDto, PagedResult } from "../../src/api/types";
 import { useThemeColors, fonts, spacing } from "../../src/theme/tokens";
@@ -22,6 +23,11 @@ export default function BeneficiariesScreen() {
   const colors = useThemeColors();
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  // Deschis din property/[id].tsx ("Istoric beneficiari") → doar beneficiarii cazați
+  // vreodată la ACEA locație, nu lista globală (vezi comentariul de pe
+  // BeneficiaryService.GetAllAsync din backend). Fără parametri, ecranul se comportă
+  // exact ca înainte — lista completă, ca shortcut spre tab.
+  const { propertyId, propertyLabel } = useLocalSearchParams<{ propertyId?: string; propertyLabel?: string }>();
 
   const [search, setSearch] = useState("");
   const [beneficiaries, setBeneficiaries] = useState<BeneficiaryDto[] | null>(null);
@@ -36,14 +42,15 @@ export default function BeneficiariesScreen() {
     try {
       setError(null);
       const qs = query.trim() ? `&search=${encodeURIComponent(query.trim())}` : "";
-      const result = await api.get<PagedResult<BeneficiaryDto>>(`/api/beneficiaries?page=${pageToLoad}&pageSize=${PAGE_SIZE}${qs}`);
+      const propertyQs = propertyId ? `&propertyId=${propertyId}` : "";
+      const result = await api.get<PagedResult<BeneficiaryDto>>(`/api/beneficiaries?page=${pageToLoad}&pageSize=${PAGE_SIZE}${qs}${propertyQs}`);
       setBeneficiaries((prev) => (pageToLoad === 1 ? result.items : [...(prev ?? []), ...result.items]));
       setPage(pageToLoad);
       setHasMore(result.hasMore);
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Nu am putut încărca beneficiarii.");
     }
-  }, []);
+  }, [propertyId]);
 
   useFocusEffect(useCallback(() => { load(search, 1); }, [load]));
 
@@ -56,7 +63,18 @@ export default function BeneficiariesScreen() {
 
   return (
     <ScreenContainer tabBar header>
-      <Stack.Screen options={{ headerShown: true, title: "Beneficiari" }} />
+      <Stack.Screen options={{ headerShown: true, title: propertyId ? `Beneficiari — ${propertyLabel ?? "locație"}` : "Beneficiari" }} />
+
+      {propertyId && (
+        <View style={styles.scopeBanner}>
+          <Text style={{ color: colors.accentInk, fontFamily: fonts.bodyMedium, fontSize: 12.5, flex: 1 }}>
+            Doar beneficiarii cazați la {propertyLabel ?? "această locație"}
+          </Text>
+          <Pressable onPress={() => router.replace("/beneficiaries")}>
+            <Text style={{ color: colors.accentInk, fontFamily: fonts.bodyBold, fontSize: 12.5 }}>Vezi toți ›</Text>
+          </Pressable>
+        </View>
+      )}
 
       <Field
         label="Caută după nume sau telefon"
@@ -69,6 +87,13 @@ export default function BeneficiariesScreen() {
 
       {error && <Text style={{ color: colors.danger }}>{error}</Text>}
 
+      {!beneficiaries && (
+        <View style={{ marginTop: spacing.md }}>
+          <SkeletonList count={6} lines={1} />
+        </View>
+      )}
+
+      {beneficiaries && (
       <FlatList
         style={styles.list}
         data={beneficiaries ?? []}
@@ -104,6 +129,7 @@ export default function BeneficiariesScreen() {
           </Pressable>
         )}
       />
+      )}
 
       <Link href="/beneficiaries/new" asChild>
         <Pressable style={StyleSheet.flatten([styles.fab, { backgroundColor: colors.accent, bottom: BOTTOM_TAB_BAR_HEIGHT + insets.bottom + spacing.md }])}>
@@ -117,6 +143,7 @@ export default function BeneficiariesScreen() {
 const styles = StyleSheet.create({
   // Vezi comentariul din app/bookings/index.tsx — fără `flex:1`, înălțimea listei era ambiguă.
   list: { flex: 1 },
+  scopeBanner: { flexDirection: "row", alignItems: "center", gap: spacing.sm, marginBottom: spacing.sm },
   rowBetween: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: spacing.xs },
   name: { fontFamily: fonts.bodyBold, fontSize: 15.5 },
   metaRow: { flexDirection: "row", flexWrap: "wrap", alignItems: "center" },

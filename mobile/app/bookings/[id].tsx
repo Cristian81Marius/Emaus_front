@@ -7,6 +7,7 @@ import { DatePicker } from "../../src/components/DatePicker";
 import { PhoneField } from "../../src/components/PhoneActions";
 import { BookingStatusPill } from "../../src/components/StatusPill";
 import { PrimaryButton } from "../../src/components/PrimaryButton";
+import { SkeletonBlock, SkeletonList } from "../../src/components/Skeleton";
 import { useAuth } from "../../src/state/AuthContext";
 import { api, ApiError, getApiMode } from "../../src/api/client";
 import { BookingDto, UnitDto } from "../../src/api/types";
@@ -151,6 +152,12 @@ export default function BookingDetailScreen() {
       <ScreenContainer>
         <Stack.Screen options={{ headerShown: true, title: "Solicitare" }} />
         {error && <Text style={{ color: colors.danger }}>{error}</Text>}
+        {!error && (
+          <View style={{ gap: spacing.md, paddingTop: spacing.sm }}>
+            <SkeletonBlock widths={["50%", "70%", "40%"]} />
+            <SkeletonList count={2} lines={2} withPill={false} />
+          </View>
+        )}
       </ScreenContainer>
     );
   }

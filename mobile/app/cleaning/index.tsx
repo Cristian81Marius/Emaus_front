@@ -7,6 +7,7 @@ import { ChipPicker } from "../../src/components/ChipPicker";
 import { SelectField } from "../../src/components/SelectField";
 import { PrimaryButton } from "../../src/components/PrimaryButton";
 import { CleaningStatusPill } from "../../src/components/StatusPill";
+import { SkeletonList } from "../../src/components/Skeleton";
 import { useAuth } from "../../src/state/AuthContext";
 import { api, ApiError } from "../../src/api/client";
 import { cachedGet } from "../../src/api/sessionCache";
@@ -130,6 +131,12 @@ export default function CleaningScreen() {
             </Text>
           </Pressable>
 
+          {!tasks && (
+            <View style={{ marginTop: spacing.sm }}>
+              <SkeletonList count={4} lines={2} />
+            </View>
+          )}
+
           <ScrollView style={styles.list} contentContainerStyle={{ gap: spacing.md, paddingBottom: spacing.xxl, marginTop: spacing.sm }}>
             {tasks?.length === 0 && (
               <Text style={{ color: colors.inkFaint, fontFamily: fonts.body }}>Nicio tură pe acest filtru.</Text>
@@ -157,6 +164,12 @@ export default function CleaningScreen() {
             ))}
           </ScrollView>
         </>
+      )}
+
+      {tab === "rotation" && !properties && (
+        <View style={{ marginTop: spacing.sm }}>
+          <SkeletonList count={4} lines={2} withPill={false} />
+        </View>
       )}
 
       {tab === "rotation" && (

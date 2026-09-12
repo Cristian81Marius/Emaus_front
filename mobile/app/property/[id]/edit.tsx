@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ScrollView, Text } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { ScreenContainer } from "../../../src/components/ScreenContainer";
 import { PrimaryButton } from "../../../src/components/PrimaryButton";
@@ -23,10 +23,13 @@ export default function EditPropertyScreen() {
   const [interfon, setInterfon] = useState("");
   const [keyHolders, setKeyHolders] = useState("");
   const [keyNotes, setKeyNotes] = useState("");
+  const [isArchived, setIsArchived] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [archiveBusy, setArchiveBusy] = useState(false);
+  const [showArchiveConfirm, setShowArchiveConfirm] = useState(false);
 
-  useEffect(() => {
+  const load = () =>
     api.get<PropertyDto>(`/api/properties/${id}`).then((p) => {
       setAddress(p.address);
       setShortLabel(p.shortLabel);
@@ -34,9 +37,38 @@ export default function EditPropertyScreen() {
       setInterfon(p.interfon ?? "");
       setKeyHolders(p.keyHolders.join(", "));
       setKeyNotes(p.keyNotes ?? "");
+      setIsArchived(p.isArchived);
       setLoaded(true);
     }).catch((err) => setError(err instanceof ApiError ? err.message : "Nu am putut încărca locația."));
-  }, [id]);
+
+  useEffect(() => { load(); }, [id]);
+
+  const archive = async () => {
+    setArchiveBusy(true);
+    setError(null);
+    try {
+      await api.post(`/api/properties/${id}/archive`);
+      setShowArchiveConfirm(false);
+      await load();
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "Nu am putut arhiva locația.");
+    } finally {
+      setArchiveBusy(false);
+    }
+  };
+
+  const unarchive = async () => {
+    setArchiveBusy(true);
+    setError(null);
+    try {
+      await api.post(`/api/properties/${id}/unarchive`);
+      await load();
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "Nu am putut reactiva locația.");
+    } finally {
+      setArchiveBusy(false);
+    }
+  };
 
   const canSubmit = address.trim().length > 1 && shortLabel.trim().length > 1;
 
@@ -75,6 +107,27 @@ export default function EditPropertyScreen() {
           {error && <Text style={{ color: colors.danger, fontFamily: fonts.bodyMedium }}>{error}</Text>}
 
           <PrimaryButton label="Salvează modificările" onPress={onSubmit} loading={submitting} disabled={!canSubmit} />
+
+          <View style={{ marginTop: spacing.lg, paddingTop: spacing.lg, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.line, gap: spacing.sm }}>
+            {isArchived ? (
+              <>
+                <Text style={{ color: colors.inkFaint, fontFamily: fonts.body, fontSize: 12.5 }}>
+                  Locația e arhivată — nu apare pe ecranul de Locații decât dacă se arată explicit și cele arhivate.
+                </Text>
+                <PrimaryButton label="Reactivează locația" onPress={unarchive} loading={archiveBusy} />
+              </>
+            ) : !showArchiveConfirm ? (
+              <PrimaryButton label="Arhivează locația" variant="danger" onPress={() => setShowArchiveConfirm(true)} />
+            ) : (
+              <>
+                <Text style={{ color: colors.ink, fontFamily: fonts.body, fontSize: 13 }}>
+                  Locația nu mai apare pe ecranul de Locații, dar istoricul de cazări rămâne intact — poți reactiva oricând de-aici.
+                </Text>
+                <PrimaryButton label="Confirmă arhivarea" variant="danger" loading={archiveBusy} onPress={archive} />
+                <PrimaryButton label="Renunță" variant="secondary" onPress={() => setShowArchiveConfirm(false)} />
+              </>
+            )}
+          </View>
         </ScrollView>
       )}
       {!loaded && error && <Text style={{ color: colors.danger }}>{error}</Text>}

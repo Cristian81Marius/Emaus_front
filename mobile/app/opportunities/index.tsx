@@ -6,6 +6,7 @@ import { ScreenContainer } from "../../src/components/ScreenContainer";
 import { Card } from "../../src/components/Card";
 import { BOTTOM_TAB_BAR_HEIGHT } from "../../src/components/BottomTabBar";
 import { PrimaryButton } from "../../src/components/PrimaryButton";
+import { SkeletonList } from "../../src/components/Skeleton";
 import { useAuth } from "../../src/state/AuthContext";
 import { api, ApiError } from "../../src/api/client";
 import { OpportunityDto, OpportunityType } from "../../src/api/types";
@@ -64,6 +65,12 @@ export default function OpportunitiesScreen() {
       <Stack.Screen options={{ headerShown: true, title: "Activități", animation: "fade" }} />
 
       {error && <Text style={{ color: colors.danger }}>{error}</Text>}
+
+      {!opportunities && (
+        <View style={{ marginTop: spacing.md }}>
+          <SkeletonList count={4} lines={3} withPill={false} />
+        </View>
+      )}
 
       <ScrollView style={styles.list} contentContainerStyle={{ gap: spacing.md, paddingBottom: spacing.xxl }}>
         {opportunities?.length === 0 && (

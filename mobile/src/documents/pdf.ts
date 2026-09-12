@@ -3,6 +3,7 @@ import * as Print from "expo-print";
 import * as Sharing from "expo-sharing";
 import { File, Paths } from "expo-file-system";
 import { getApiBaseUrl, getAuthToken } from "../api/client";
+import { HousingContractFillRequest } from "../api/types";
 
 /** Un singur stil comun pentru orice PDF generat aici — placeholder sau contractul
  * completat — ca toate documentele generate din aplicație să arate consecvent. */
@@ -93,6 +94,58 @@ export async function downloadAndSharePdf(path: string, filename: string, dialog
 
   const destination = new File(Paths.cache, filename);
   const file = await File.downloadFileAsync(url, destination, { headers, idempotent: true });
+  const available = await Sharing.isAvailableAsync();
+  if (available) {
+    await Sharing.shareAsync(file.uri, { dialogTitle, mimeType: "application/pdf" });
+  }
+}
+
+/** Trimite datele contractului de cazare (AcroForm) la `POST
+ * /api/documents/housing-contract/fill` și deschide/partajează PDF-ul completat primit
+ * înapoi — spre deosebire de `downloadAndSharePdf()`, aici trimitem un body JSON (nu
+ * doar citim un fișier static), deci nu putem folosi `File.downloadFileAsync` (suportă
+ * doar GET). Pe nativ, răspunsul binar e scris direct pe disc cu `File.write()` (API-ul
+ * nou din expo-file-system, vezi node_modules/expo-file-system/build/File.d.ts — nu are
+ * echivalent pentru POST, de-aia fetch() manual + scriere manuală). */
+export async function fillHousingContractAndShare(
+  payload: HousingContractFillRequest,
+  filename: string,
+  dialogTitle: string
+): Promise<void> {
+  const url = `${getApiBaseUrl()}/api/documents/housing-contract/fill`;
+  const token = getAuthToken();
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  if (token) headers.Authorization = `Bearer ${token}`;
+
+  const response = await fetch(url, { method: "POST", headers, body: JSON.stringify(payload) });
+  if (!response.ok) {
+    let message = `Generarea contractului a eșuat (${response.status}).`;
+    try {
+      const body = await response.json();
+      if (body?.error) message = body.error;
+    } catch {
+      // răspuns fără body JSON — păstrăm mesajul generic de mai sus
+    }
+    throw new Error(message);
+  }
+
+  if (Platform.OS === "web") {
+    const blob = await response.blob();
+    const objectUrl = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = objectUrl;
+    link.download = filename;
+    link.click();
+    URL.revokeObjectURL(objectUrl);
+    return;
+  }
+
+  const bytes = new Uint8Array(await response.arrayBuffer());
+  const file = new File(Paths.cache, filename);
+  if (file.exists) file.delete();
+  file.create();
+  file.write(bytes);
+
   const available = await Sharing.isAvailableAsync();
   if (available) {
     await Sharing.shareAsync(file.uri, { dialogTitle, mimeType: "application/pdf" });

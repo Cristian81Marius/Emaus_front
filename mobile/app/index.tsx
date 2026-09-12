@@ -8,6 +8,7 @@ import { BOTTOM_TAB_BAR_HEIGHT } from "../src/components/BottomTabBar";
 import { EmausMark } from "../src/components/EmausMark";
 import { InfoButton, InfoLine } from "../src/components/InfoButton";
 import { UnitStatusPill } from "../src/components/StatusPill";
+import { SkeletonList } from "../src/components/Skeleton";
 import { useAuth } from "../src/state/AuthContext";
 import { api, ApiError } from "../src/api/client";
 import { OverviewStatsDto, PropertyDto } from "../src/api/types";
@@ -23,16 +24,21 @@ export default function LocationsScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
 
+  const isNucleus = user?.role === "Nucleus";
+
   const [properties, setProperties] = useState<PropertyDto[] | null>(null);
   const [stats, setStats] = useState<OverviewStatsDto | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
+  // Implicit doar locațiile active — cele arhivate (contract de închiriere încheiat etc.)
+  // rămân accesibile, dar doar la cerere explicită, nu aglomerează lista de zi cu zi.
+  const [showArchived, setShowArchived] = useState(false);
 
-  const load = useCallback(async () => {
+  const load = useCallback(async (includeArchived: boolean) => {
     try {
       setError(null);
       const [data, overview] = await Promise.all([
-        api.get<PropertyDto[]>("/api/properties"),
+        api.get<PropertyDto[]>(`/api/properties${includeArchived ? "?includeArchived=true" : ""}`),
         api.get<OverviewStatsDto>("/api/stats/overview"),
       ]);
       setProperties(data);
@@ -44,8 +50,8 @@ export default function LocationsScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      load();
-    }, [load])
+      load(showArchived);
+    }, [load, showArchived])
   );
 
   // `AuthGate` din app/_layout.tsx face deja redirect la /login când nu ești
@@ -62,13 +68,26 @@ export default function LocationsScreen() {
         <EmausMark size={20} />
         <Text style={[styles.eyebrow, { color: colors.accentInk }]}>Bună, {user.fullName.split(" ")[0]}</Text>
       </View>
-      <Text style={[styles.title, { color: colors.ink }]}>Locațiile Emaus</Text>
+      <View style={styles.titleRow}>
+        <Text style={[styles.title, { color: colors.ink }]}>Locațiile Emaus</Text>
+        {isNucleus && (
+          <Pressable onPress={() => router.push("/property/new")}>
+            <Text style={{ color: colors.accentInk, fontFamily: fonts.bodyMedium, fontSize: 13.5 }}>+ Locație nouă</Text>
+          </Pressable>
+        )}
+      </View>
 
       {properties && (
         <Text style={[styles.summary, { color: colors.inkSoft }]}>
           {occupied} din {totalUnits} unități ocupate acum
         </Text>
       )}
+
+      <Pressable onPress={() => setShowArchived((v) => !v)} style={{ marginTop: spacing.xs }}>
+        <Text style={{ color: colors.inkFaint, fontFamily: fonts.bodyMedium, fontSize: 12.5 }}>
+          {showArchived ? "Ascunde locațiile arhivate" : "Arată și locațiile arhivate"}
+        </Text>
+      </Pressable>
 
       {stats && (
         <View style={{ marginTop: spacing.xs }}>
@@ -82,6 +101,13 @@ export default function LocationsScreen() {
 
       {error && <Text style={{ color: colors.danger, marginTop: spacing.sm }}>{error}</Text>}
 
+      {!properties && (
+        <View style={{ marginTop: spacing.md }}>
+          <SkeletonList count={5} />
+        </View>
+      )}
+
+      {properties && (
       <FlatList
         style={{ flex: 1, marginTop: spacing.md }}
         contentContainerStyle={{ gap: spacing.md, paddingBottom: spacing.xxl }}
@@ -89,13 +115,20 @@ export default function LocationsScreen() {
         keyExtractor={(item) => item.id}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={async () => {
           setRefreshing(true);
-          await load();
+          await load(showArchived);
           setRefreshing(false);
         }} />}
         renderItem={({ item }) => (
           <Pressable onPress={() => router.push(`/property/${item.id}`)}>
-            <Card>
-              <Text style={[styles.address, { color: colors.ink }]}>{item.shortLabel}</Text>
+            <Card style={item.isArchived ? { opacity: 0.55 } : undefined}>
+              <View style={styles.unitHeaderRow}>
+                <Text style={[styles.address, { color: colors.ink }]}>{item.shortLabel}</Text>
+                {item.isArchived && (
+                  <Text style={{ color: colors.inkFaint, fontFamily: fonts.bodyMedium, fontSize: 11.5, textTransform: "uppercase" }}>
+                    Arhivată
+                  </Text>
+                )}
+              </View>
               <View style={styles.unitsRow}>
                 {item.units.map((unit) => (
                   <View key={unit.id} style={styles.unitChip}>
@@ -108,6 +141,7 @@ export default function LocationsScreen() {
           </Pressable>
         )}
       />
+      )}
 
       <Link href="/booking/new" asChild>
         <Pressable style={StyleSheet.flatten([styles.fab, { backgroundColor: colors.accent, bottom: BOTTOM_TAB_BAR_HEIGHT + insets.bottom + spacing.md }])}>
@@ -121,9 +155,11 @@ export default function LocationsScreen() {
 const styles = StyleSheet.create({
   brandRow: { flexDirection: "row", alignItems: "center", gap: 6 },
   eyebrow: { fontFamily: fonts.bodyBold, fontSize: 12, textTransform: "uppercase", letterSpacing: 0.6 },
+  titleRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   title: { fontFamily: fonts.display, fontSize: 26, marginTop: 2 },
   summary: { fontFamily: fonts.mono, fontSize: 12.5, marginTop: spacing.md },
-  address: { fontFamily: fonts.bodyBold, fontSize: 15.5, marginBottom: spacing.sm },
+  unitHeaderRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: spacing.sm },
+  address: { fontFamily: fonts.bodyBold, fontSize: 15.5 },
   unitsRow: { flexDirection: "row", flexWrap: "wrap", gap: spacing.sm },
   unitChip: { flexDirection: "row", alignItems: "center", gap: 6 },
   unitName: { fontFamily: fonts.mono, fontSize: 12 },

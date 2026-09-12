@@ -87,6 +87,10 @@ export interface PropertyDto {
   lifetimeStayDays: number | null;
   lifetimeBookingsCompleted: number | null;
   units: UnitDto[];
+  /** Arhivată = nu mai apare implicit pe ecranul de Locații (contract de închiriere
+   * încheiat etc.) — NU o ștergere reală, istoricul rămâne intact. Vezi comutatorul
+   * "Arată arhivate" din app/index.tsx. */
+  isArchived: boolean;
 }
 
 /** Statistici agregate, pentru un rezumat rapid pe ecranul de Locații. Numărul de
@@ -158,6 +162,37 @@ export interface BeneficiaryDto {
   blockedReason: string | null;
   accountBalance: number;
   notes: string | null;
+}
+
+/** Body-ul pentru `POST /api/documents/housing-contract/fill` — vezi
+ * HousingContractFillRequest.cs în backend (Emaus.Api/Dtos/Documents/DocumentDtos.cs).
+ * TOATE câmpurile sunt opționale, inclusiv `signaturePngBase64` — cineva poate genera
+ * contractul completat și fără semnătură (ex. de printat și semnat pe hârtie), câmpul
+ * de semnătură rămâne atunci gol în PDF. Un câmp lipsă nu dă eroare. Numele
+ * proprietăților sunt EXACT cele din DTO-ul C#/din câmpurile AcroForm ale
+ * template-ului — nu le redenumi fără să schimbi și backend-ul. */
+export interface HousingContractFillRequest {
+  numeCompletBenef?: string;
+  telefonBenef?: string;
+  seria?: string;
+  numar?: string;
+  adresa?: string;
+  localitate?: string;
+  judet?: string;
+  numeContactUrgenta?: string;
+  telefonContactUrgenta?: string;
+  numeResponsabilCazare?: string;
+  ziuaInceput?: string;
+  lunaInceput?: string;
+  anInceput?: string;
+  ziSfarsit?: string;
+  lunaSfarsit?: string;
+  anSfarsit?: string;
+  completNameBenef?: string;
+  locatiaCazarii?: string;
+  dataCazarii?: string;
+  /** PNG codat base64 (cu sau fără prefixul "data:image/png;base64,"). Opțional. */
+  signaturePngBase64?: string;
 }
 
 export type BookingStatus = "PendingApproval" | "Approved" | "Rejected" | "Active" | "Completed" | "Cancelled";

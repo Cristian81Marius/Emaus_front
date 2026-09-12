@@ -180,7 +180,11 @@ const routes: Route[] = [
   {
     method: "GET",
     pattern: "/api/properties",
-    handler: () => db.properties,
+    // Implicit doar cele active — la fel ca backend-ul real (vezi PropertyService.GetAllAsync).
+    handler: ({ query }) => {
+      const includeArchived = query.get("includeArchived") === "true";
+      return includeArchived ? db.properties : db.properties.filter((p) => !p.isArchived);
+    },
   },
   {
     method: "GET",
@@ -188,6 +192,29 @@ const routes: Route[] = [
     handler: ({ params }) => {
       const property = db.properties.find((p) => p.id === params.id);
       if (!property) throw new MockApiError(404, "Locația nu a fost găsită.");
+      return property;
+    },
+  },
+  {
+    method: "POST",
+    pattern: "/api/properties",
+    nucleusOnly: true,
+    handler: ({ body }) => {
+      const property: PropertyDto = {
+        id: nextId("prop"),
+        address: body.address,
+        shortLabel: body.shortLabel,
+        isTemporary: body.isTemporary ?? false,
+        notes: body.notes ?? null,
+        interfon: body.interfon ?? null,
+        keyHolders: Array.isArray(body.keyHolders) ? body.keyHolders : [],
+        keyNotes: body.keyNotes ?? null,
+        lifetimeStayDays: body.lifetimeStayDays ?? null,
+        lifetimeBookingsCompleted: body.lifetimeBookingsCompleted ?? null,
+        isArchived: false,
+        units: [],
+      };
+      db.properties.push(property);
       return property;
     },
   },
@@ -205,6 +232,47 @@ const routes: Route[] = [
       property.keyHolders = Array.isArray(body.keyHolders) ? body.keyHolders : property.keyHolders;
       property.keyNotes = body.keyNotes ?? null;
       return property;
+    },
+  },
+  {
+    method: "POST",
+    pattern: "/api/properties/:id/archive",
+    nucleusOnly: true,
+    handler: ({ params }) => {
+      const property = db.properties.find((p) => p.id === params.id);
+      if (!property) throw new MockApiError(404, "Locația nu a fost găsită.");
+      property.isArchived = true;
+      return property;
+    },
+  },
+  {
+    method: "POST",
+    pattern: "/api/properties/:id/unarchive",
+    nucleusOnly: true,
+    handler: ({ params }) => {
+      const property = db.properties.find((p) => p.id === params.id);
+      if (!property) throw new MockApiError(404, "Locația nu a fost găsită.");
+      property.isArchived = false;
+      return property;
+    },
+  },
+  {
+    method: "POST",
+    pattern: "/api/properties/:id/units",
+    nucleusOnly: true,
+    handler: ({ params, body }) => {
+      const property = db.properties.find((p) => p.id === params.id);
+      if (!property) throw new MockApiError(404, "Locația nu a fost găsită.");
+      const unit: UnitDto = {
+        id: nextId("unit"),
+        propertyId: property.id,
+        name: body.name,
+        capacity: body.capacity,
+        status: "Available",
+        statusNotes: null,
+      };
+      property.units.push(unit);
+      return unit;
     },
   },
   {
@@ -244,10 +312,19 @@ const routes: Route[] = [
     // deci array-ul inversat dă exact ordinea cronologică descrescătoare.
     handler: ({ query }) => {
       const search = query.get("search")?.trim();
+      const propertyId = query.get("propertyId");
       const page = Math.max(1, Number(query.get("page") ?? "1") || 1);
       const pageSize = Math.max(1, Number(query.get("pageSize") ?? "30") || 30);
 
       let list = db.beneficiaries.slice().reverse();
+      if (propertyId) {
+        // Doar beneficiarii cu cel puțin o cazare la ACEA locație — join pe bookings→unit,
+        // la fel ca filtrul din backend-ul real (BeneficiaryService.GetAllAsync).
+        const beneficiaryIdsHere = new Set(
+          db.bookings.filter((b) => b.unitId && findUnit(b.unitId)?.property.id === propertyId).map((b) => b.beneficiaryId)
+        );
+        list = list.filter((b) => beneficiaryIdsHere.has(b.id));
+      }
       if (search) {
         const needle = normalizeSearchText(search);
         list = list.filter((b) => normalizeSearchText(b.fullName).includes(needle) || (b.phone ?? "").includes(search));

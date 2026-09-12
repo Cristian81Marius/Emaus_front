@@ -10,6 +10,7 @@ import { SelectField } from "../../src/components/SelectField";
 import { InfoButton, InfoLine } from "../../src/components/InfoButton";
 import { PrimaryButton } from "../../src/components/PrimaryButton";
 import { MaintenanceStatusPill, MaintenancePriorityPill } from "../../src/components/StatusPill";
+import { SkeletonList } from "../../src/components/Skeleton";
 import { useAuth } from "../../src/state/AuthContext";
 import { api, ApiError } from "../../src/api/client";
 import { cachedGet } from "../../src/api/sessionCache";
@@ -121,6 +122,12 @@ export default function MaintenanceScreen() {
       </ScrollView>
 
       {error && <Text style={{ color: colors.danger }}>{error}</Text>}
+
+      {!tickets && (
+        <View style={{ marginTop: spacing.md }}>
+          <SkeletonList count={4} lines={3} />
+        </View>
+      )}
 
       <ScrollView style={styles.list} contentContainerStyle={{ gap: spacing.md, paddingBottom: spacing.xxl }}>
         {tickets?.length === 0 && <Text style={{ color: colors.inkFaint, fontFamily: fonts.body }}>Nimic pe acest filtru.</Text>}

@@ -7,6 +7,7 @@ import { Field } from "../../src/components/Field";
 import { InfoButton, InfoLine } from "../../src/components/InfoButton";
 import { PhoneField } from "../../src/components/PhoneActions";
 import { PrimaryButton } from "../../src/components/PrimaryButton";
+import { SkeletonBlock, SkeletonList } from "../../src/components/Skeleton";
 import { BeneficiaryStatusPill, BookingStatusPill } from "../../src/components/StatusPill";
 import { useAuth } from "../../src/state/AuthContext";
 import { api, ApiError } from "../../src/api/client";
@@ -80,6 +81,12 @@ export default function BeneficiaryDetailScreen() {
       <ScreenContainer>
         <Stack.Screen options={{ headerShown: true, title: "Beneficiar" }} />
         {error && <Text style={{ color: colors.danger }}>{error}</Text>}
+        {!error && (
+          <View style={{ gap: spacing.md, paddingTop: spacing.sm }}>
+            <SkeletonBlock widths={["60%", "40%"]} />
+            <SkeletonList count={2} lines={1} withPill={false} />
+          </View>
+        )}
       </ScreenContainer>
     );
   }

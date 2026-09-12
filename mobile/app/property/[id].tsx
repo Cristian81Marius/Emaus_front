@@ -3,7 +3,10 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { Link, useFocusEffect, useLocalSearchParams, useRouter, Stack } from "expo-router";
 import { ScreenContainer } from "../../src/components/ScreenContainer";
 import { Card } from "../../src/components/Card";
+import { Field } from "../../src/components/Field";
+import { PrimaryButton } from "../../src/components/PrimaryButton";
 import { InfoButton, InfoLine } from "../../src/components/InfoButton";
+import { SkeletonBlock, SkeletonList } from "../../src/components/Skeleton";
 import { PhoneActions } from "../../src/components/PhoneActions";
 import { UnitStatusPill, UNIT_STATUS_META } from "../../src/components/StatusPill";
 import { ShareActions } from "../../src/components/ShareActions";
@@ -34,6 +37,10 @@ export default function PropertyDetailScreen() {
   const [error, setError] = useState<string | null>(null);
   const [busyUnitId, setBusyUnitId] = useState<string | null>(null);
   const [editingStatusUnitId, setEditingStatusUnitId] = useState<string | null>(null);
+  const [showAddUnit, setShowAddUnit] = useState(false);
+  const [newUnitName, setNewUnitName] = useState("");
+  const [newUnitCapacity, setNewUnitCapacity] = useState("1");
+  const [addUnitBusy, setAddUnitBusy] = useState(false);
 
   const load = useCallback(async () => {
     try {
@@ -50,6 +57,23 @@ export default function PropertyDetailScreen() {
   }, [id]);
 
   useFocusEffect(useCallback(() => { load(); }, [load]));
+
+  const addUnit = async () => {
+    const capacity = parseInt(newUnitCapacity, 10);
+    if (!newUnitName.trim() || !Number.isFinite(capacity) || capacity < 1) return;
+    setAddUnitBusy(true);
+    try {
+      await api.post(`/api/properties/${id}/units`, { name: newUnitName.trim(), capacity });
+      setNewUnitName("");
+      setNewUnitCapacity("1");
+      setShowAddUnit(false);
+      await load();
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "Nu am putut adăuga unitatea.");
+    } finally {
+      setAddUnitBusy(false);
+    }
+  };
 
   const changeStatus = async (unitId: string, status: UnitStatus) => {
     setBusyUnitId(unitId);
@@ -69,6 +93,13 @@ export default function PropertyDetailScreen() {
       <Stack.Screen options={{ headerShown: true, title: property?.address ?? "Locație" }} />
 
       {error && <Text style={{ color: colors.danger }}>{error}</Text>}
+
+      {!property && (
+        <View style={{ gap: spacing.md, paddingTop: spacing.sm }}>
+          <SkeletonBlock widths={["80%", "50%"]} />
+          <SkeletonList count={3} lines={1} />
+        </View>
+      )}
 
       {property && (
         <ScrollView contentContainerStyle={{ gap: spacing.md, paddingBottom: spacing.xxl }}>
@@ -154,6 +185,25 @@ export default function PropertyDetailScreen() {
             );
           })}
 
+          {isNucleus && (
+            <Card>
+              {!showAddUnit ? (
+                <Pressable onPress={() => setShowAddUnit(true)}>
+                  <Text style={{ color: colors.accentInk, fontFamily: fonts.bodyMedium, fontSize: 13.5 }}>+ Adaugă unitate</Text>
+                </Pressable>
+              ) : (
+                <View style={{ gap: spacing.sm }}>
+                  <Field label="Nume unitate" value={newUnitName} onChangeText={setNewUnitName} placeholder="ex. Dormitor, Ap. 32" />
+                  <Field label="Capacitate (persoane)" value={newUnitCapacity} onChangeText={setNewUnitCapacity} keyboardType="number-pad" />
+                  <View style={{ flexDirection: "row", gap: spacing.sm }}>
+                    <PrimaryButton label="Adaugă" onPress={addUnit} loading={addUnitBusy} disabled={!newUnitName.trim()} />
+                    <PrimaryButton label="Renunță" variant="secondary" onPress={() => setShowAddUnit(false)} />
+                  </View>
+                </View>
+              )}
+            </Card>
+          )}
+
           <PropertyHistory property={property} bookings={unitBookings} colors={colors} onOpenBooking={(bookingId) => router.push(`/bookings/${bookingId}`)} />
         </ScrollView>
       )}
@@ -185,7 +235,7 @@ function PropertyHistory({
 
   return (
     <Card>
-      <Link href="/beneficiaries" asChild>
+      <Link href={{ pathname: "/beneficiaries", params: { propertyId: property.id, propertyLabel: property.shortLabel } }} asChild>
         <Pressable style={styles.unitHeader}>
           <Text style={{ fontFamily: fonts.bodyBold, fontSize: 14.5, color: colors.ink, marginBottom: spacing.xs }}>Istoric beneficiari</Text>
           <Text style={{ color: colors.inkFaint, fontSize: 16 }}>›</Text>

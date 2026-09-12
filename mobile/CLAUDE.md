@@ -98,8 +98,9 @@ zero, nici nu amesteca date reale cu nume inventate fără să spui limpede care
 |---|---|---|
 | `/login` | `login.tsx` | Autentificare telefon+parolă |
 | `/` | `index.tsx` | Locații — listă adrese+unități, statusul curent, punct de intrare |
-| `/property/[id]` | `property/[id].tsx` | Detaliu locație — status unități, cazat acum, + istoric consolidat de beneficiari pe toată locația (`PropertyHistory`, la finalul ecranului — nu mai e îngropat per-unitate). Titlul "Istoric beneficiari" e apăsabil și duce direct la `/beneficiaries` (lista GLOBALĂ, nu filtrată pe locația curentă — cerut explicit așa, ca shortcut spre tab) |
-| `/property/[id]/edit` | `property/[id]/edit.tsx` | Editează adresă/etichetă scurtă/observații/interfon/chei (Nucleus) |
+| `/property/[id]` | `property/[id].tsx` | Detaliu locație — status unități, cazat acum, + istoric consolidat de beneficiari pe toată locația (`PropertyHistory`, la finalul ecranului — nu mai e îngropat per-unitate). Titlul "Istoric beneficiari" e apăsabil și duce la `/beneficiaries?propertyId=...&propertyLabel=...` (lista de Beneficiari, filtrată DOAR pe beneficiarii cazați la locația curentă — vezi mai jos; decizie inversată 2026-09, inițial ducea la lista globală ca shortcut spre tab) |
+| `/property/new` | `property/new.tsx` | Locație nouă — doar identitatea (adresă/etichetă/interfon/chei), Nucleus. Unitățile se adaugă după, de pe `property/[id].tsx` ("+ Adaugă unitate", tot Nucleus) |
+| `/property/[id]/edit` | `property/[id]/edit.tsx` | Editează adresă/etichetă scurtă/observații/interfon/chei (Nucleus) + arhivează/reactivează locația (vezi mai jos) |
 | `/bookings` | `bookings/index.tsx` | Listă solicitări, filtrabilă pe status |
 | `/bookings/[id]` | `bookings/[id].tsx` | Detaliu solicitare — decide/alocă/check-out/anulează/comentarii |
 | `/bookings/[id]/edit` | `bookings/[id]/edit.tsx` | Editează perioada solicitată (Nucleus, doar cât timp nu e încă alocată) |

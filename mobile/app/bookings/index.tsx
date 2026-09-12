@@ -7,6 +7,7 @@ import { Card } from "../../src/components/Card";
 import { BOTTOM_TAB_BAR_HEIGHT } from "../../src/components/BottomTabBar";
 import { PhoneActions } from "../../src/components/PhoneActions";
 import { BookingStatusPill } from "../../src/components/StatusPill";
+import { SkeletonList } from "../../src/components/Skeleton";
 import { api, ApiError } from "../../src/api/client";
 import { BookingDto, BookingStatus } from "../../src/api/types";
 import { useThemeColors, fonts, spacing } from "../../src/theme/tokens";
@@ -70,6 +71,13 @@ export default function BookingsScreen() {
 
       {error && <Text style={{ color: colors.danger }}>{error}</Text>}
 
+      {!bookings && (
+        <View style={{ marginTop: spacing.md }}>
+          <SkeletonList count={5} lines={3} />
+        </View>
+      )}
+
+      {bookings && (
       <FlatList
         style={styles.list}
         data={bookings ?? []}
@@ -103,6 +111,7 @@ export default function BookingsScreen() {
           </Pressable>
         )}
       />
+      )}
 
       <Link href="/booking/new" asChild>
         <Pressable style={StyleSheet.flatten([styles.fab, { backgroundColor: colors.accent, bottom: BOTTOM_TAB_BAR_HEIGHT + insets.bottom + spacing.md }])}>
